@@ -10,23 +10,19 @@ namespace DESS
     {
         static void Main(string[] args)
         {
-            BinaryHelper read = new BinaryHelper("test.bin");
-           
-            for (int i = 0; i < read.FullBlockSize; i++)
+
+            
+
+            for (int i = 0; i < 32; i++)
             {
-                List<bool> tmp = read.Read64BitsBlock();
-                if (tmp==null)
-                {
-                    Console.WriteLine(i);
-                }
-                read.Write64BitsBlock(tmp);
+             
+
+                
+                Console.Write((StaticArrays.P[i]-1) +", ");
+            
             }
 
-            read.Save("maly2.bin");
-
-
-            Console.WriteLine("elo");
-
+            Console.WriteLine();
             Console.Read();
         }
     }
