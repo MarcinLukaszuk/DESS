@@ -56,13 +56,14 @@ namespace DESS
 
         public List<bool> ReadLastBlockAndOffset()
         {
-            List<bool> lastBlock = new List<bool>();
+           
             if (LastBlockBytes == 0)
             {
-                lastBlock.Add(true);
-                for (int i = 1; i < 4; i++)
+                List<bool> lastBlock = new List<bool>();
+            
+                for (int i = 0; i < 63; i++)
                     lastBlock.Add(false);
-
+                lastBlock.Add(true);
                 return lastBlock;
             }
 
@@ -100,7 +101,7 @@ namespace DESS
                     break;
                 numbers++;
             }
-            int fullBytes = 8 - (numbers / 8); 
+            int fullBytes =  (numbers / 8); 
 
             for (int i = 7; i > fullBytes; i--)
                 _outputBytesArray.AddLast(ConvertBitsArrayToByte(writeArray.GetRange(i * 8, 8).ToArray()));

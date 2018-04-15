@@ -50,10 +50,8 @@ namespace DESS
                 _binaryHelper.Write64BitsBlock(Decrypt64BitBlock(tmp, keys));
             }
             tmp = _binaryHelper.Read64BitsBlock();
+
             _binaryHelper.Write64BitsBlockAndOffset(Decrypt64BitBlock(tmp, keys));
-
-
-
             _binaryHelper.Save(outputFilePath);
         }
 
@@ -163,12 +161,12 @@ namespace DESS
             }
             return list;
         }
-        private bool[] InitialPermutation(bool[] intArray)
+        private bool[] InitialPermutation(bool[] boolArray)
         {
             bool[] ip = new bool[64];
             for (int i = 0; i < 64; i++)
             {
-                ip[i] = intArray[StaticArrays.IP[i]];
+                ip[i] = boolArray[StaticArrays.IP[i]];
             }
             return ip;
         }

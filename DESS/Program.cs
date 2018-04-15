@@ -10,11 +10,10 @@ namespace DESS
     {
         static void Main(string[] args)
         {
-            string string64bit = "0001001100110100010101110111100110011011101111001101111111110001";
+            string string64bit = "0001001100110100010101110101100110011011101111001101111111110001";
 
             Dess dess = new Dess(string64bit);
-            dess.Encrypt("moje.bin","output.bin");
-
+            dess.Encrypt("test.bin", "output.bin");
             dess.Decrypt("output.bin", "output2.bin");
 
 
