@@ -11,19 +11,21 @@ namespace DESS
     public class BinaryHelper
     {
         List<byte> _inputBytesArray;
+
+
         LinkedList<byte> _outputBytesArray;
         int _inputByteCounter;
 
-        public int FullBlockSize { get { return _inputBytesArray.Count / 8; } }
+        public int FullBlockCount { get { return _inputBytesArray.Count / 8; } }
 
 
         public BinaryHelper(string inputPath)
         {
-            _inputBytesArray = File.ReadAllBytes(inputPath).ToList();
+            _inputBytesArray = File.ReadAllBytes(inputPath).ToList(); 
             _outputBytesArray = new LinkedList<byte>();
             _inputByteCounter = 0;
         }
-        
+
         /// <summary>
         /// zapis do pliku tablicy _outputBytesArray
         /// </summary>
@@ -32,11 +34,11 @@ namespace DESS
         {
             File.WriteAllBytes(outputPath, _outputBytesArray.ToArray());
         }
-        
+
         #region Odczyt Zapis bloku
         public List<bool> Read64BitsBlock()
         {
-            if (_inputByteCounter + 8 > FullBlockSize * 8)
+            if (_inputByteCounter + 8 > FullBlockCount * 8)
             {
                 Console.WriteLine("niepelny wiersz");
                 return null;
@@ -63,7 +65,7 @@ namespace DESS
         #endregion
 
 
-      
+
 
 
         #region Konwertery

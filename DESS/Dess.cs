@@ -9,30 +9,77 @@ namespace DESS
 {
     public class Dess
     {
-        private BinaryHelper binaryHelper;
+        private BinaryHelper _binaryHelper;
         private bool[] _key;
 
-        public Dess(string key, string inputFilePath, string outputFilePath)
+        public Dess(string key)
         {
             _key = key.Select(x => x == '1' ? true : false).Reverse().ToArray();
-            binaryHelper = new BinaryHelper(inputFilePath);
         }
 
-        public void Encrypt()
+        public void Encrypt(string inputFilePath, string outputFilePath)
         {
-            var tmp = binaryHelper.Read64BitsBlock();
-            Encrypt64BitBlock(tmp, _key);
+            _binaryHelper = new BinaryHelper(inputFilePath);
+
+            var keys = generateKeys(permuteKeyPC1(_key));
+
+            List<bool> tmp = new List<bool>();
+            for (int i = 0; i < _binaryHelper.FullBlockCount; i++)
+            {
+                tmp = _binaryHelper.Read64BitsBlock();
+                var lol = Encrypt64BitBlock(tmp, keys);
+                _binaryHelper.Write64BitsBlock(lol);
+            }
+            _binaryHelper.Save(outputFilePath);
         }
 
+        public void Decrypt(string inputFilePath, string outputFilePath)
+        {
+            _binaryHelper = new BinaryHelper(inputFilePath);
 
-        private List<bool> Encrypt64BitBlock(List<bool> block64Bit, bool[] _key)
+            var keys = generateKeys(permuteKeyPC1(_key));
+
+            List<bool> tmp = new List<bool>();
+            for (int i = 0; i < _binaryHelper.FullBlockCount; i++)
+            {
+                tmp = _binaryHelper.Read64BitsBlock();
+                var lol = Decrypt64BitBlock(tmp, keys);
+                _binaryHelper.Write64BitsBlock(lol);
+            }
+            _binaryHelper.Save(outputFilePath);
+        }
+
+        private List<bool> Decrypt64BitBlock(List<bool> block64Bit, Dictionary<int, bool[]> keys)
         {
             var tmp = InitialPermutation(block64Bit.ToArray());
             bool[] leftBlock = tmp.ToList().GetRange(32, 32).ToArray();
             bool[] rightBlock = tmp.ToList().GetRange(0, 32).ToArray();
             bool[] tmpBlock;
-            var keys = generateKeys(permuteKeyPC1(_key));
 
+            for (int i = 16; i >= 2; i--)
+            {
+                tmpBlock = XOR(leftBlock, functionRF(rightBlock, keys[i]));
+                leftBlock = rightBlock.ToArray();
+                rightBlock = tmpBlock.ToArray();
+            }
+
+            tmpBlock = XOR(leftBlock, functionRF(rightBlock, keys[1]));
+            leftBlock = tmpBlock.ToArray();
+
+            var tmpConcat = rightBlock.Concat(leftBlock).ToArray();
+
+
+            return InvertInitialPermutation(tmpConcat).ToList();
+        }
+
+
+
+        private List<bool> Encrypt64BitBlock(List<bool> block64Bit, Dictionary<int, bool[]> keys)
+        {
+            var tmp = InitialPermutation(block64Bit.ToArray());
+            bool[] leftBlock = tmp.ToList().GetRange(32, 32).ToArray();
+            bool[] rightBlock = tmp.ToList().GetRange(0, 32).ToArray();
+            bool[] tmpBlock;
             for (int i = 1; i <= 15; i++)
             {
                 tmpBlock = XOR(leftBlock, functionRF(rightBlock, keys[i]));
