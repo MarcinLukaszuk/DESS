@@ -51,14 +51,14 @@ namespace DESS
                 sb.Append(ConverByteToBitString(item));
 
             ///tworzy tablice boolowska
-            var boolArray = sb.ToString().Select(x => x == '0' ? false : true).ToList();
+            var boolArray = sb.ToString().Select(x => x == '0' ? false : true).Reverse().ToList();
 
             return boolArray;
         }
-        public void Write64BitsBlock(List<bool> setArray)
+        public void Write64BitsBlock(List<bool> writeArray)
         {
-            for (int i = 0; i < 8; i++)
-                _outputBytesArray.AddLast(ConvertBitsArrayToByte(setArray.GetRange(i * 8, 8).ToArray()));
+            for (int i = 7; i >= 0; i--)
+                _outputBytesArray.AddLast(ConvertBitsArrayToByte(writeArray.GetRange(i * 8, 8).ToArray()));
         }
         #endregion
 
@@ -74,7 +74,7 @@ namespace DESS
         private byte ConvertBitsArrayToByte(bool[] _bitsArray)
         {
             byte val = 0;
-            foreach (bool b in _bitsArray)
+            foreach (bool b in _bitsArray.Reverse())
             {
                 val <<= 1;
                 if (b) val |= 1;

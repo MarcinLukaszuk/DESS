@@ -18,21 +18,29 @@ namespace DESS
             }
         }
 
-        public KeyGenerator() : this(16)
+      
+        public KeyGenerator()
         {
-
-        }
-
-        public KeyGenerator(int length)
-        {
-            StringBuilder b = new StringBuilder();
-            Random rand = new Random();
+            StringBuilder builder = new StringBuilder();
+            Random rnd = new Random();
             for (int i = 0; i < 16; i++)
-            {
-                b.Append(toChar(rand.Next(0, 15)));
-            }
-            _key = b.ToString();
+                builder.Append(toChar(rnd.Next(0, 15)));
+
+            _key = builder.ToString();
         }
+
+        public void get64bitsArray()
+        {
+            StringBuilder builder = new StringBuilder();
+            Random rnd = new Random();
+            for (int i = 0; i < 64; i++)
+                builder.Append(rnd.Next(0, 2));
+
+            _key = builder.ToString();
+
+        }
+
+
 
         private static char toChar(int p)
         {

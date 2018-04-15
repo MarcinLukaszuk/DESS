@@ -10,17 +10,20 @@ namespace DESS
     {
         static void Main(string[] args)
         {
+            string string64bit = "0001001100110100010101110111100110011011101111001101111111110001";
+        
 
-            
 
-            for (int i = 0; i < 32; i++)
-            {
-             
+            Console.WriteLine();
+            Dess dess = new Dess(string64bit, "output.bin", "output.bin");
 
-                
-                Console.Write((StaticArrays.P[i]-1) +", ");
-            
-            }
+           
+
+            dess.Encrypt();
+
+
+
+
 
             Console.WriteLine();
             Console.Read();
