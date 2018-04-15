@@ -17,11 +17,12 @@ namespace DESS
         int _inputByteCounter;
 
         public int FullBlockCount { get { return _inputBytesArray.Count / 8; } }
+        public int LastBlockBytes { get { return _inputBytesArray.Count % 8; } }
 
 
         public BinaryHelper(string inputPath)
         {
-            _inputBytesArray = File.ReadAllBytes(inputPath).ToList(); 
+            _inputBytesArray = File.ReadAllBytes(inputPath).ToList();
             _outputBytesArray = new LinkedList<byte>();
             _inputByteCounter = 0;
         }
@@ -38,11 +39,6 @@ namespace DESS
         #region Odczyt Zapis bloku
         public List<bool> Read64BitsBlock()
         {
-            if (_inputByteCounter + 8 > FullBlockCount * 8)
-            {
-                Console.WriteLine("niepelny wiersz");
-                return null;
-            }
             StringBuilder sb = new StringBuilder();
             ///   wyciaga 8 bitow
             var list = _inputBytesArray.GetRange(_inputByteCounter, 8);
@@ -57,9 +53,56 @@ namespace DESS
 
             return boolArray;
         }
+
+        public List<bool> ReadLastBlockAndOffset()
+        {
+            List<bool> lastBlock = new List<bool>();
+            if (LastBlockBytes == 0)
+            {
+                lastBlock.Add(true);
+                for (int i = 1; i < 4; i++)
+                    lastBlock.Add(false);
+
+                return lastBlock;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            ///   wyciaga LastBlockBytes bitow
+            var list = _inputBytesArray.GetRange(_inputByteCounter, LastBlockBytes);
+            ///  tworzy stringa 64bit
+
+            foreach (var item in list)
+                sb.Append(ConverByteToBitString(item));
+
+            sb.Append("10000000");
+            for (int i = LastBlockBytes + 1; i < 8; i++)
+                sb.Append("00000000");
+
+            ///tworzy tablice boolowska
+            var boolArray = sb.ToString().Select(x => x == '0' ? false : true).Reverse().ToList();
+
+            return boolArray;
+        }
+
+
         public void Write64BitsBlock(List<bool> writeArray)
         {
             for (int i = 7; i >= 0; i--)
+                _outputBytesArray.AddLast(ConvertBitsArrayToByte(writeArray.GetRange(i * 8, 8).ToArray()));
+        }
+
+        public void Write64BitsBlockAndOffset(List<bool> writeArray)
+        {
+            int numbers = 0;
+            for (int i = 0; i <64; i++)
+            {
+                if (writeArray.ElementAt(i) == true)
+                    break;
+                numbers++;
+            }
+            int fullBytes = 8 - (numbers / 8); 
+
+            for (int i = 7; i > fullBytes; i--)
                 _outputBytesArray.AddLast(ConvertBitsArrayToByte(writeArray.GetRange(i * 8, 8).ToArray()));
         }
         #endregion
