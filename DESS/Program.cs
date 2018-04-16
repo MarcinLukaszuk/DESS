@@ -10,14 +10,16 @@ namespace DESS
     {
         static void Main(string[] args)
         {
-            string string64bit = "1001001100110100010101110101100110011011101111001101111111110001";
+            Dess dess;
+            KeyGenerator keygen;
+            string string64bit = "";
 
             Console.WriteLine("MENU");
-            Console.WriteLine("1 - zaszyfruj plik");
-            Console.WriteLine("2 - odszyfruj plik");
-            Console.WriteLine("3 - wyjdź\n\r");
+            Console.WriteLine("1 - generuj klucz");
+            Console.WriteLine("2 - zaszyfruj plik");
+            Console.WriteLine("3 - odszyfruj plik");
+            Console.WriteLine("4 - wyjdź\n\r");
 
-            Dess dess = new Dess(string64bit);
             string input, output = "";
 
             while (1==1)
@@ -25,6 +27,13 @@ namespace DESS
                 switch (int.Parse(Console.ReadLine()))
                 {
                     case 1:
+                        keygen = new KeyGenerator();
+                        keygen.get64bitsArray();
+                        string64bit = keygen.Key;
+                        Console.WriteLine("Klucz wygenerowano\n\r");
+                        break;
+                    case 2:
+                        dess = new Dess(string64bit);
                         Console.WriteLine("Podaj nazwę pliku wejściowego: ");
                         input = Console.ReadLine();
                         Console.WriteLine("Podaj nazwę pliku wyjściowego: ");
@@ -32,7 +41,8 @@ namespace DESS
                         dess.Encrypt(input, output);
                         Console.WriteLine("Plik zaszyfrowano\n\r");
                         break;
-                    case 2:
+                    case 3:
+                        dess = new Dess(string64bit);
                         Console.WriteLine("Podaj nazwę pliku wejściowego: ");
                         input = Console.ReadLine();
                         Console.WriteLine("Podaj nazwę pliku wyjściowego: ");
@@ -40,7 +50,7 @@ namespace DESS
                         dess.Decrypt(input, output);
                         Console.WriteLine("Plik odszyfrowano\n\r");
                         break;
-                    case 3:
+                    case 4:
                         Environment.Exit(0);
                         break;
                     default:
