@@ -30,7 +30,9 @@ namespace DESS
                         keygen = new KeyGenerator();
                         keygen.get64bitsArray();
                         string64bit = keygen.Key;
-                        Console.WriteLine("Klucz wygenerowano\n\r");
+                        Console.WriteLine("Wygenerowany klucz: ");
+                        Console.WriteLine(string64bit);
+                        Console.WriteLine();
                         break;
                     case 2:
                         dess = new Dess(string64bit);
